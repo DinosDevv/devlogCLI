@@ -7,8 +7,8 @@ const program = new Command();
 // This is just a test
 
 program
-  .name('my-cli')
-  .description('A CLI application built with Commander.js')
+  .name('devlog')
+  .description('A CLI application for logging your development')
   .version('1.0.0')
   .option('-n, --niggas <PEOS>', 'This is a nigga in paris')
 
