@@ -4,6 +4,8 @@ import { Command } from 'commander';
 
 const program = new Command();
 
+// This is just a test
+
 program
   .name('my-cli')
   .description('A CLI application built with Commander.js')
