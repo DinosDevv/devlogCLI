@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { readContent, addContent } from './fileHandling.js'
+import { readContent, addContent, listItems, searchEntry } from './fileHandling.js'
 
 const program = new Command();
 
@@ -22,11 +22,11 @@ program
       "tags": [
         tag
       ],
-      "date": Date.now().toString()
+      "date": Date().toLocaleString()
     }
     addContent(entryObj)
     console.log(`Added entry ${entry} with tag ${tag}! `)
-    
+
   })
 
 program
@@ -36,14 +36,14 @@ program
   .description('List all entries')
   .action((tag, since) => {
     if(tag) console.log(`All entries with tag: ${tag}`)
-    readContent('./myFile.txt')
+    listItems(tag, since)
   })
 
 program
   .command('search <entry>')
   .description('Search a specific entry Item')
   .action((entry) => {
-    console.log(`Here is your entry: ${entry}`)
+    searchEntry(entry)
   })
 
 program
@@ -55,5 +55,3 @@ program
 program.parse();
 
 const options = program.opts()
-
-if (options.niggas) console.log(`That's some niggas in paris ${options.niggas}`)
