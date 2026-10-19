@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import readContent from './fileHandling.js'
+import { readContent, addContent } from './fileHandling.js'
 
 const program = new Command();
 
@@ -16,8 +16,17 @@ program
   .description('Add an entry')
   .action((entry, tag) => {
     // Add an entry
+    
+    const entryObj = {
+      "content": entry,
+      "tags": [
+        tag
+      ],
+      "date": Date.now().toString()
+    }
+    addContent(entryObj)
     console.log(`Added entry ${entry} with tag ${tag}! `)
-  
+    
   })
 
 program

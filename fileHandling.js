@@ -1,11 +1,25 @@
 import fs from 'fs'
+const localDb = './localdb.json'
 
-export default function readContent(fileName) {
-  fs.readFile(`${fileName}`, 'utf8', (err, data) => {
-    if(err) {
-      console.log("Error")
-      return
-    }
-    console.log(data)
+
+function readContent() {
+  try {
+    const data = fs.readFileSync(localDb, 'utf8')
+    return JSON.parse(data)
+  } catch (err) {
+    console.error(`Error reading ${localDb}: ${err.message}`)
+    return {}
+  }
+}
+
+function addContent(content) {
+  let dataToStore = readContent()
+  dataToStore.push(content)
+  
+  fs.writeFile(`${localDb}`, JSON.stringify(dataToStore, null, 2), (err) => {
+    if(err) console.log(`Error: ${err}`)
+    console.log('Saved!')
   })
 }
+
+export { readContent, addContent }
