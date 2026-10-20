@@ -1,7 +1,9 @@
 import fs from 'fs'
-const localDb = './localdb.json'
 import Levenshtein from 'levenshtein'
 import { findMinIndex } from './helpers.js'
+
+const localDb = './data/localdb.json'
+const stats = './data/stats.json'
 
 function readContent() {
   try {
@@ -23,53 +25,67 @@ function addContent(content) {
   })
 }
 
+const MS_PER_UNIT = {
+  H: 60 * 60 * 1000,
+  D: 24 * 60 * 60 * 1000,
+  W: 7 * 24 * 60 * 60 * 1000,
+}
+
+function parseSince(since) {
+  const unit = since.charAt(since.length - 1).toUpperCase()
+  const amount = Number(since.slice(0, -1))
+
+  if (!MS_PER_UNIT[unit]) {
+    console.log(`Incorrect time unit: ${unit}`)
+    return null
+  }
+  if (Number.isNaN(amount)) {
+    console.log(`Incorrect amount: ${since.slice(0, -1)}`)
+    return null
+  }
+
+  return amount * MS_PER_UNIT[unit]
+}
+
 function listItems(tags, since) {
-  const listOfEntries = readContent()
-  let entriesToShow = []
-
-  console.log(tags)
-  // for (let entry of listOfEntries) {
-  //   if(entry.tags.include(tags)) entriesToShow.push(entry)
-  // }
-
-  // parameters are either strings or null
-
-  if(tags == null && since == null) entriesToShow = listOfEntries
-
-
-  console.log(typeof(tags))
-  console.log(typeof(since))
-
-  // if(tags) {
-  //   for(let entry of listOfEntries) {
-  //     if(entry.tags.includes(tags)) entriesToShow.push(entry)
-  //   }
-
-  //   return entriesToShow
-  // } else {
-  //   return listOfEntries
-  // }
-
-  for (let entry of entriesToShow) console.log(entry)
-}
-function searchEntry(entry) {
-  const list = []
-  let foundMatch = false
-  let index = 0
   const entries = readContent()
+  const now = Date.now()
 
-  for(let item of entries) {
-    list.push(Levenshtein(item.content, entry))
-    if(item.content.toUpperCase() == entry.toUpperCase()) foundMatch = true
-  }
-  
-  if(!foundMatch) {
-    index = findMinIndex(list)
-    console.log(`Did you mean "${entries[index].content}"?`)
+  let maxAge = null
+  if (since) {
+    maxAge = parseSince(since)
+    if (maxAge === null) return
   }
 
-  // console.log(`${item.content}: created at ${item.date} (${item.tags})`)
+  const output = []
+  for (const entry of entries) {
+    const matchesTags = !tags || entry.tags.includes(tags)
+    const matchesTime = maxAge === null || now - entry.date <= maxAge
+
+    if (matchesTags && matchesTime) output.push(entry)
+  }
+
+  console.log(output)
 }
+function searchEntry(query) {
+  const entries = readContent()
+  const distances = []
+  let match = null
 
+  for (const entry of entries) {
+    distances.push(Levenshtein(entry.content, query))
+    if (entry.content.toUpperCase() === query.toUpperCase()) {
+      match = entry
+    }
+  }
+
+  if (!match) {
+    const closestIndex = findMinIndex(distances)
+    match = entries[closestIndex]
+    console.log(`Did you mean "${match.content}"?`)
+  }
+
+  console.log(`${match.content}: created at ${match.date} (${match.tags})`)
+}
 
 export { readContent, addContent, listItems, searchEntry }
