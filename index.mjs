@@ -22,7 +22,7 @@ program
       "tags": [
         tag
       ],
-      "date": Date().toLocaleString()
+      "date": Date.parse(Date())
     }
     addContent(entryObj)
     console.log(`Added entry ${entry} with tag ${tag}! `)
@@ -45,6 +45,9 @@ program
   .action((entry) => {
     searchEntry(entry)
   })
+
+program
+  .command('session <time> <name>')
 
 program
   .command('stats')
