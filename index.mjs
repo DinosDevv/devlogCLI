@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { addEntry, listEntries, searchEntry } from './commands.js'
+import { addEntry, listEntries, searchEntry, addSession, showStats } from './commands.js'
 
 const program = new Command();
 
@@ -47,16 +47,21 @@ program
   })
 
 program
-  .command('session <time> <name>')
-  .action((time, name) => {
-    console.log(`${name}: ${time} mins`)
+  .command('session <duration> <name>')
+  .action((duration, name) => {
+    const sessionObject = {
+      "name": name,
+      "duration": Number(duration), // in minutes
+      "date": Date.parse(Date()) 
+    }
+    addSession(sessionObject)
   })
 
 program
   .command('stats')
   .description('Show stats')
   .action(() => {
-    console.log('Stats')
+    showStats()
   })
 program.parse();
 

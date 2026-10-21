@@ -1,6 +1,5 @@
 import fs from 'fs'
 
-
 function readJSON(PATH) {
   try {
     const data = fs.readFileSync(`${PATH}`, 'utf8')
