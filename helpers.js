@@ -10,6 +10,12 @@ function findMinIndex(list) {
   return list.indexOf(min)
 }
 
+const MS_PER_UNIT = {
+  H: 60 * 60 * 1000,
+  D: 24 * 60 * 60 * 1000,
+  W: 7 * 24 * 60 * 60 * 1000,
+}
+
 function parseSince(since) {
   const unit = since.charAt(since.length - 1).toUpperCase()
   const amount = Number(since.slice(0, -1))

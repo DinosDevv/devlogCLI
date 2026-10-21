@@ -24,7 +24,7 @@ program
       ],
       "date": Date.parse(Date())
     }
-    addContent(entryObj)
+    addEntry(entryObj)
     console.log(`Added entry ${entry} with tag ${tag}! `)
 
   })
@@ -36,7 +36,7 @@ program
   .description('List all entries')
   .action((tag, since) => {
     if(tag) console.log(`All entries with tag: ${tag}`)
-    listItems(tag, since)
+    listEntries(tag, since)
   })
 
 program
