@@ -1,12 +1,13 @@
 import { findMinIndex, parseSince } from "./helpers.js"
 import { readJSON, appendToJSON } from "./fileHandling.js"
+import { calculateStats } from "./stats.js"
 import Levenshtein from 'levenshtein'
+import { read } from "fs"
 
 // add <entry> <tag>
 
 const entriesPATH = './data/entries.json'
 const sessionsPATH = './data/sessions.json'
-const statsPATH = './data/stats.json'
 
 function addEntry(content) {
   if(appendToJSON(entriesPATH, content)) console.log("Saved!")
@@ -32,7 +33,11 @@ function listEntries(tags, since) {
     if (matchesTags && matchesTime) output.push(entry)
   }
 
-  console.log(output)
+  for(const entry of output) {
+    const entryDate = new Date(entry.date)
+    console.log(`${entry.content}: created at ${entryDate.toLocaleString()} (${entry.tags})\n`)
+  }
+
 }
 
 // search <entry>
@@ -60,8 +65,17 @@ function searchEntry(query) {
   console.log(`${match.content}: created at ${entryDate.toLocaleString()} (${match.tags})`)
 }
 
-export { addEntry, listEntries, searchEntry }
-
 // session <time> <name>
 
+function addSession(session) {
+  if(appendToJSON(sessionsPATH, session)) console.log("Started session!")
+}
+
 // stats
+
+function showStats() {
+  const stats = calculateStats()
+
+}
+
+export { addEntry, listEntries, searchEntry, addSession, showStats }
