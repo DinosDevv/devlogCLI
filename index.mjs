@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { readContent, addContent, listItems, searchEntry } from './fileHandling.js'
+import { addEntry, listEntries, searchEntry } from './commands.js'
 
 const program = new Command();
 
@@ -48,6 +48,9 @@ program
 
 program
   .command('session <time> <name>')
+  .action((time, name) => {
+    console.log(`${name}: ${time} mins`)
+  })
 
 program
   .command('stats')
