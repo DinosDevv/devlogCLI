@@ -1,29 +1,21 @@
 import { findMinIndex, parseSince } from "./helpers.js"
-import { readContent } from "./fileHandling.js"
+import { readJSON, appendToJSON } from "./fileHandling.js"
 import Levenshtein from 'levenshtein'
 
 // add <entry> <tag>
 
-function addEntry(content) {
-  let dataToStore = readContent()
-  dataToStore.push(content)
-  
-  fs.writeFile(`${localDb}`, JSON.stringify(dataToStore, null, 2), (err) => {
-    if(err) console.log(`Error: ${err}`)
-    console.log('Saved!')
-  })
-}
+const entriesPATH = './data/entries.json'
+const sessionsPATH = './data/sessions.json'
+const statsPATH = './data/stats.json'
 
-const MS_PER_UNIT = {
-  H: 60 * 60 * 1000,
-  D: 24 * 60 * 60 * 1000,
-  W: 7 * 24 * 60 * 60 * 1000,
+function addEntry(content) {
+  if(appendToJSON(entriesPATH, content)) console.log("Saved!")
 }
 
 // list [tag] [since]
 
 function listEntries(tags, since) {
-  const entries = readContent()
+  const entries = readJSON(entriesPATH)
   const now = Date.now()
 
   let maxAge = null
@@ -46,7 +38,7 @@ function listEntries(tags, since) {
 // search <entry>
 
 function searchEntry(query) {
-  const entries = readContent()
+  const entries = readJSON(entriesPATH)
   const distances = []
   let match = null
 
