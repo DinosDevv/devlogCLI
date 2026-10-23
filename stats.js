@@ -1,10 +1,8 @@
 import { readJSON } from "./fileHandling.js"
-
-const sessionsPATH = './data/sessions.json'
-const entriesPATH = './data/entries.json'
+import { sessionsPath, entriesPath } from "./paths.js"
 
 function calculateTotalTime() {
-  const sessions = readJSON(sessionsPATH)
+  const sessions = readJSON(sessionsPath)
   let totalTime = 0
 
   for(const session of sessions) {
@@ -15,7 +13,7 @@ function calculateTotalTime() {
 }
 function topTags() {
   const tags = {}
-  const entries = readJSON(entriesPATH)
+  const entries = readJSON(entriesPath)
 
   for(const entry of entries) {
     for(const tag of entry.tags) {
@@ -38,8 +36,8 @@ function topTags() {
 }
 function calculateStreak() {
   const dates = []
-  const entries = readJSON(entriesPATH)
-  const sessions = readJSON(sessionsPATH)
+  const entries = readJSON(entriesPath)
+  const sessions = readJSON(sessionsPath)
   let streak = 0
 
   for(const entry of entries) dates.push(entry.date)

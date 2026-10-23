@@ -2,8 +2,12 @@
 
 import { Command } from 'commander';
 import { addEntry, listEntries, searchEntry, addSession, showStats } from './commands.js'
+import { checkFolder } from './fileHandling.js'
+import { folderPath } from './paths.js';
 
 const program = new Command();
+
+checkFolder(folderPath)
 
 program
   .name('devlog')
