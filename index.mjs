@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
 import { addEntry, listEntries, searchEntry, addSession, showStats } from './commands.js'
 import { checkFolder } from './fileHandling.js'
 import { folderPath } from './paths.js';
-
-const program = new Command();
+import { parseArgv, command } from './parser.js';
+import { argv } from 'node:process';
 
 checkFolder(folderPath)
+console.log(parseArgv(argv))
 
+
+/*
 program
   .name('devlog')
   .description('A CLI application for logging your development')
@@ -70,3 +72,4 @@ program
 program.parse();
 
 const options = program.opts()
+*/
