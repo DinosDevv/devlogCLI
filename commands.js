@@ -76,6 +76,10 @@ function addSession(session) {
 function showStats() {
   const stats = calculateStats()
 
+  console.log(`Total Time tracked: ${stats.totalTime}`)
+  console.log(`Your most used tags: ${stats.tagRank}`)
+  console.log(`Your current logging streak: ${stats.streak}`)
+
 }
 
 export { addEntry, listEntries, searchEntry, addSession, showStats }

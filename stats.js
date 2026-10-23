@@ -33,7 +33,6 @@ function topTags() {
     return second[1] - first[1]
   })
 
-  console.log(tags['kaka'])
   
   return tagRank
 }
@@ -41,20 +40,28 @@ function calculateStreak() {
   const dates = []
   const entries = readJSON(entriesPATH)
   const sessions = readJSON(sessionsPATH)
+  let streak = 0
 
   for(const entry of entries) dates.push(entry.date)
   for(const session of sessions) dates.push(session.date)
 
   dates.sort()
+  dates.reverse()
+
+  let prevDate = dates[0]
 
   for(const date of dates) {
     const newDate = new Date(date)
-    console.log(newDate.toISOString())
+    const previousDate = new Date(prevDate)
+    
+    const dateDifference = previousDate.getDate() - newDate.getDate()
+
+    if(dateDifference == 1) streak++
+    if(dateDifference > 1) return streak
+    prevDate = date
   }
-
-
+  return streak
 }
-calculateStreak()
 function calculateStats() {
   /*
     1) We need to fetch the total time of sessions DONE
@@ -63,8 +70,13 @@ function calculateStats() {
   */
   const totalTime = calculateTotalTime()
   const tagRank = topTags()
+  const streak = calculateStreak()
 
-  const stats = {}
+  const stats = {
+    "totalTime": totalTime,
+    "tagRank": tagRank,
+    "streak": streak
+  }
 
   return stats
 
