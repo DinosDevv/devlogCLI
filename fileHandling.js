@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { sessionsPath, entriesPath } from './paths';
+import { sessionsPath, entriesPath } from './paths.js';
 
 function checkFolder(PATH) {
   try {
