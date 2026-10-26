@@ -7,16 +7,12 @@ function parseArgv(argv) {
   let parser = {
     command: argv[2],
     positionals: [],
-    flags: []  
+    flags: {}
   }
   
   for(let i = 3; i < argv.length; i++) {
     if(argv[i].charAt(0) == '-') {
-      const flagObj = {
-        "flagName": argv[i],
-        "flagParameter": argv[i+1]
-      }
-      parser.flags.push(flagObj)
+      parser.flags[`${argv[i]}`] = `${argv[i+1]}`
       i++
     } else parser.positionals.push(argv[i])
   }
