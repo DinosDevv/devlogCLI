@@ -27,20 +27,23 @@ function readJSON(PATH) {
     const data = fs.readFileSync(`${PATH}`, 'utf8')
     return JSON.parse(data)
   } catch (err) {
+    console.log(`Error: ${err.messsage}`)
     return []
   }
 }
 function appendToJSON(PATH, content) {
   let dataToStore = readJSON(PATH)
   dataToStore.push(content)
-  
-  fs.writeFile(`${PATH}`, JSON.stringify(dataToStore, null, 2), (err) => {
-    if(err) {
-      console.log(`Error: ${err}`)
-      return false
-    }
-    return true
-  })
+  try{
+    fs.writeFile(`${PATH}`, JSON.stringify(dataToStore, null, 2), (err) => {
+      if(err) {
+        console.log(`Error: ${err.message}`)
+        return false
+      }
+    })
+  } catch(err) {
+    console.log(`${err.message}`)
+  }
 }
 
 export { readJSON, appendToJSON, checkFolder }

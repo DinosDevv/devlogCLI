@@ -64,7 +64,7 @@ function searchEntry(query) {
 // session <time> <name>
 
 function addSession(session) {
-  if(appendToJSON(sessionsPath, session)) console.log("Started session!")
+  appendToJSON(sessionsPath, session)
 }
 
 // stats

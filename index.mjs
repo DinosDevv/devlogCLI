@@ -3,73 +3,54 @@
 import { addEntry, listEntries, searchEntry, addSession, showStats } from './commands.js'
 import { checkFolder } from './fileHandling.js'
 import { folderPath } from './paths.js';
-import { parseArgv, command } from './parser.js';
+import { parseArgv } from './parser.js';
 import { argv } from 'node:process';
 
 checkFolder(folderPath)
-console.log(parseArgv(argv))
 
+const command = parseArgv(argv)
+console.log(command)
 
-/*
-program
-  .name('devlog')
-  .description('A CLI application for logging your development')
-  .version('1.0.0')
-
-program
-  .command('add <entry> <tag>')
-  .option('--tag -t', 'Tags entry')
-  .description('Add an entry')
-  .action((entry, tag) => {
-    // Add an entry
-    
-    const entryObj = {
-      "content": entry,
-      "tags": [
-        tag
-      ],
-      "date": Date.parse(Date())
-    }
-    addEntry(entryObj)
-    console.log(`Added entry ${entry} with tag ${tag}! `)
-
-  })
-
-program
-  .command('list [tag] [since]')
-  .option('--tag -t', 'Entry tag')
-  .option('--since -s', 'Date since')
-  .description('List all entries')
-  .action((tag, since) => {
-    if(tag) console.log(`All entries with tag: ${tag}`)
-    listEntries(tag, since)
-  })
-
-program
-  .command('search <entry>')
-  .description('Search a specific entry Item')
-  .action((entry) => {
-    searchEntry(entry)
-  })
-
-program
-  .command('session <duration> <name>')
-  .action((duration, name) => {
-    const sessionObject = {
-      "name": name,
-      "duration": Number(duration), // in minutes
-      "date": Date.parse(Date()) 
-    }
-    addSession(sessionObject)
-  })
-
-program
-  .command('stats')
-  .description('Show stats')
-  .action(() => {
-    showStats()
-  })
-program.parse();
-
-const options = program.opts()
-*/
+if(command.command == 'add') {
+  let tag = ""
+  if(command.flags["-t"] || command.flags["--tag"]) {
+    command.flags["-t"] ? tag = command.flags["-t"] : command.flags["--tag"] 
+  }
+  const entryObj = {
+    "content": command.positionals[0],
+    "tags": [tag],
+    "date": Date.parse(Date())
+  }
+  addEntry(entryObj)
+}
+if(command.command == 'list') {
+  let tag = ""
+  let since = ""
+  if(command.flags["-t"] || command.flags["--tag"]) {
+    command.flags["-t"] ? tag = command.flags["-t"] : command.flags["--tag"] 
+  }
+  if(command.flags["-s"] || command.flags["--since"]) {
+    command.flags["-s"] ? since = command.flags["-s"] : command.flags["--since"]
+  }
+  listEntries(tag, since)
+}
+if(command.command == 'search') {
+  searchEntry(`${command.positionals[0]}`)
+}
+if(command.command == 'session') {
+  console.log("Session")
+  let duration = 0
+  if(command.flags["-d"] || command.flags["--duration"]) {
+    command.flags["-d"] ? duration = Number(command.flags["-d"]) : Number(command.flags["--duration"])
+  }
+  const sessionObject = {
+    "name": command.positionals[0],
+    "duration": duration, // in minutes
+    "date": Date.parse(Date()) 
+  }
+  console.log(sessionObject)
+  addSession(sessionObject)
+}
+if(command.command == 'stats') {
+  showStats()
+}
