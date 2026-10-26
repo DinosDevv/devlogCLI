@@ -60,6 +60,14 @@ const sessionCommand = {
      addSession(sessionObject)
   }
 }
+const statsCommand = {
+  command: "stats",
+  flagsRequired: [],
+  positionalsExpected: 0,
+  action: function() {
+    showStats()
+  }
+}
 
 if(command.command == 'add') {
   let tag = ""
@@ -67,8 +75,4 @@ if(command.command == 'add') {
     command.flags["-t"] ? tag = command.flags["-t"] : command.flags["--tag"] 
   }
   
-}
-
-if(command.command == 'stats') {
-  showStats()
 }
