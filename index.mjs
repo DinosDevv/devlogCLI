@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { addEntry, listEntries, searchEntry, addSession, showStats } from './commands.js'
+import { addEntry, listEntries, searchEntry, addSession, showStats } from './actions.js'
 import { checkFolder } from './fileHandling.js'
 import { folderPath } from './paths.js';
 import { parseArgv } from './parser.js';
@@ -11,46 +11,64 @@ checkFolder(folderPath)
 const command = parseArgv(argv)
 console.log(command)
 
+const addCommand = {
+  command: "add",
+  flagsRequired: [
+    {'tags': true}
+  ],
+  positionalsExpected: 1,
+  action: function(content, tag) {
+    const entryObj = {
+      "content": content,
+      "tags": [tag],
+      "date": Date.parse(Date())
+    }
+    addEntry(entryObj)
+  }
+}
+const listCommand = {
+  command: "list",
+  flagsRequired: [
+    {'tags': false},
+    {'since': false}
+  ],
+  positionalsExpected: 0,
+  action: function(tag, since) {
+    listEntries(tag, since)
+  }
+}
+const searchCommand = {
+  command: "search",
+  flagsRequired: [],
+  positionalsExpected: 1,
+  action: function(query) {
+    searchEntry(query)
+  }
+}
+const sessionCommand = {
+  command: "session",
+  flagsRequired: [
+    {'duration': true}
+  ],
+  positionalsExpected: 1,
+  action: function(name, duration) {
+    const sessionObject = {
+      "name": name,
+      "duration": duration, // in minutes
+      "date": Date.parse(Date()) 
+    }
+     addSession(sessionObject)
+  }
+}
+
 if(command.command == 'add') {
   let tag = ""
   if(command.flags["-t"] || command.flags["--tag"]) {
     command.flags["-t"] ? tag = command.flags["-t"] : command.flags["--tag"] 
   }
-  const entryObj = {
-    "content": command.positionals[0],
-    "tags": [tag],
-    "date": Date.parse(Date())
-  }
-  addEntry(entryObj)
+  
 }
-if(command.command == 'list') {
-  let tag = ""
-  let since = ""
-  if(command.flags["-t"] || command.flags["--tag"]) {
-    command.flags["-t"] ? tag = command.flags["-t"] : command.flags["--tag"] 
-  }
-  if(command.flags["-s"] || command.flags["--since"]) {
-    command.flags["-s"] ? since = command.flags["-s"] : command.flags["--since"]
-  }
-  listEntries(tag, since)
-}
-if(command.command == 'search') {
-  searchEntry(`${command.positionals[0]}`)
-}
-if(command.command == 'session') {
-  console.log("Session")
-  let duration = 0
-  if(command.flags["-d"] || command.flags["--duration"]) {
-    command.flags["-d"] ? duration = Number(command.flags["-d"]) : Number(command.flags["--duration"])
-  }
-  const sessionObject = {
-    "name": command.positionals[0],
-    "duration": duration, // in minutes
-    "date": Date.parse(Date()) 
-  }
-  console.log(sessionObject)
-  addSession(sessionObject)
-}
+
 if(command.command == 'stats') {
   showStats()
 }
